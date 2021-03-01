@@ -14,6 +14,6 @@ class SubscriberTableSeeder extends Seeder
      */
     public function run()
     {
-        Subscriber::factory(5)->create();
+        Subscriber::factory()->count(5)->create();
     }
 }
