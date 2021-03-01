@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Api\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Api\BaseController;
 use App\Http\Repository\TopicRepository;
-use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -33,7 +32,7 @@ class TopicController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError($validator->errors());
+            return $this->sendError($validator->errors(), 400);
         }
 
         try {

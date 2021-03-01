@@ -26,12 +26,11 @@ class BaseController extends Controller
     /**
      * return error response.
      *
-     * @param $error
      * @param array $errorMessages
      * @param int $code
      * @return JsonResponse
      */
-    public function sendError(string $error, $errorMessages = [], int $code = 404): JsonResponse
+    public function sendError($errorMessages = [], int $code = 404): JsonResponse
     {
         return response()->json($errorMessages, $code);
     }

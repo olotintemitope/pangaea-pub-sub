@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group([
-    'namespace' => 'Api',
+    'namespace' => 'App\Http\Controllers\Api',
 ], function () {
     Route::group([/*'middleware' => 'auth:api'*/], function () {
         Route::post('/topic/create', 'TopicController@create')->name('api.topic_create');
