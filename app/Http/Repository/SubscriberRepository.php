@@ -5,27 +5,30 @@ namespace App\Http\Repository;
 
 
 use App\Http\Contracts\BaseModelInterface;
+use App\Models\Subscriber;
 use App\Models\Topic;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class SubscriberRepository implements BaseModelInterface
 {
     /**
-     * @var Topic
+     * @var Subscriber
      */
-    private $topic;
+    private $subscriber;
 
-    public function __construct(Topic $topic)
+    public function __construct(Subscriber $subscriber)
     {
-        $this->topic = $topic;
+        $this->subscriber = $subscriber;
     }
 
     public function create(array $attributes)
     {
-        return $this->topic->create($attributes);
+        return $this->subscriber->create($attributes);
     }
 
     public function findOne(int $id)
     {
-        return $this->topic->find($id);
+        return $this->subscriber->find($id);
     }
 }
