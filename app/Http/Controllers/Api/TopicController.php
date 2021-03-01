@@ -5,11 +5,11 @@ namespace App\Http\Api\Controllers;
 use App\Http\Controllers\Api\BaseController;
 use App\Http\Repository\TopicRepository;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class TopicController extends BaseController
 {
-
     /**
      * @var TopicRepository
      */
@@ -20,10 +20,16 @@ class TopicController extends BaseController
         $this->topicRepository = $topicRepository;
     }
 
-    public function create(Request $request)
+    /**
+     * Create a topic
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function create(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-           'topic' => 'required|max:250'
+           'slug' => 'required|unique:topics|max:250'
         ]);
 
         if ($validator->fails()) {
