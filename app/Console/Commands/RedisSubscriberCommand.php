@@ -3,12 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Http\Repository\TopicRepository;
+use App\Jobs\SendWebHookRequestJob;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redis;
 use JsonException;
 use RedisException;
-use Spatie\WebhookServer\WebhookCall;
 
 class RedisSubscriberCommand extends Command
 {
@@ -51,18 +51,10 @@ class RedisSubscriberCommand extends Command
             $subscribers = $topic->subscribers;
 
             Redis::subscribe([$eventName], function ($payload) use ($topic, $subscribers) {
+                $payload = json_decode($payload, true, 512, JSON_THROW_ON_ERROR);
+
                 foreach ($this->getOptimizedSubscribers($subscribers) as $url) {
-                    WebhookCall::create()
-                        ->withHeaders([
-                            'X-Header-From' => 'pangaea_pub-sub'
-                        ])
-                        ->url($url)
-                        ->payload([
-                            'topic' => $topic->slug,
-                            'data' => json_decode($payload, true, 512, JSON_THROW_ON_ERROR)
-                        ])
-                        ->useSecret('pangaea_must_be_great')
-                        ->dispatch();
+                    dispatch(new SendWebHookRequestJob($topic, $payload, $url));
                 }
             });
         } catch (RedisException | JsonException | \RuntimeException $exception) {

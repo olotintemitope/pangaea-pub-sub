@@ -50,10 +50,10 @@ class TopicController extends BaseController
      * Publish a topic
      *
      * @param Request $request
-     * @param $topic
+     * @param $eventName
      * @return JsonResponse
      */
-    public function publish(Request $request, $topic): JsonResponse
+    public function publish(Request $request, $eventName): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'slug' => 'required|exists:topics|max:250'
@@ -63,15 +63,15 @@ class TopicController extends BaseController
             return $this->sendError($validator->errors(), 400);
         }
 
-        $topic = $this->topicRepository->slug($topic);
+        $topic = $this->topicRepository->slug($eventName);
         if (null === $topic) {
             return $this->sendError([
-                "topic" => "Topic: {$topic} does not exist"
+                "topic" => "Topic: {$eventName} does not exist"
             ]);
         }
 
         try {
-            Redis::publish('topic1', json_encode($request->all(), JSON_THROW_ON_ERROR));
+            Redis::publish($eventName, json_encode($request->all(), JSON_THROW_ON_ERROR));
             return response()->json([], Response::HTTP_OK);
         } catch (\JsonException $e) {
             return response()->json([], Response::HTTP_BAD_REQUEST);
