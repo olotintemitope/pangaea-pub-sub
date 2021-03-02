@@ -19,6 +19,7 @@ Route::group([
 ], function () {
     Route::group([/*'middleware' => 'auth:api'*/], function () {
         Route::post('/topic/create', 'TopicController@create')->name('api.topic_create');
+        Route::post('/publish/{topic}', 'TopicController@publish')->name('api.topic_publish');
     });
 
     Route::post('/subscribe/{topic}', 'SubscriberController@subscribe')->name('api.subscriber_subscribe');

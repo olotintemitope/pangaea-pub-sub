@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //$schedule->command()->everyMinute();
+        $schedule->command('redis:subscribe-topic1')->everyMinute();
     }
 
     /**

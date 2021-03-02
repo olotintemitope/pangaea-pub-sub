@@ -6,6 +6,7 @@ use App\Http\Repository\TopicRepository;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redis;
+use JsonException;
 use RedisException;
 use Spatie\WebhookServer\WebhookCall;
 
@@ -28,7 +29,7 @@ class RedisSubscriberCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'redis:subscribe-topic';
+    protected $signature = 'redis:subscribe-topic1';
 
     /**
      * The console command description.
@@ -52,16 +53,19 @@ class RedisSubscriberCommand extends Command
             Redis::subscribe([$eventName], function ($payload) use ($topic, $subscribers) {
                 foreach ($this->getOptimizedSubscribers($subscribers) as $url) {
                     WebhookCall::create()
+                        ->withHeaders([
+                            'X-Header-From' => 'pangaea_pub-sub'
+                        ])
                         ->url($url)
                         ->payload([
                             'topic' => $topic->slug,
                             'data' => json_decode($payload, true, 512, JSON_THROW_ON_ERROR)
                         ])
-                        ->useSecret('sampler_must_be_great')
+                        ->useSecret('pangaea_must_be_great')
                         ->dispatch();
                 }
             });
-        } catch (RedisException | \JsonException $exception) {
+        } catch (RedisException | JsonException | \RuntimeException $exception) {
             echo $exception->getMessage();
         }
     }

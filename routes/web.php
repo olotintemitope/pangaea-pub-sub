@@ -13,9 +13,3 @@ use Illuminate\Support\Facades\Redis;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    Redis::publish('topic1', json_encode([
-        'name' => 'Adam Wathan'
-    ]));
-});
